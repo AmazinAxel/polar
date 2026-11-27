@@ -7,7 +7,9 @@ export default defineConfig({
 	plugins: [
 		sveltekit({
 			preprocess: vitePreprocess(),
-			adapter: adapter({ fallback: '404.html' }) // build error page
+			adapter: adapter(),
+			// index.html is also the fallback for unknown paths, so /a/b must not resolve ./_app to /a/_app
+			paths: { relative: false }
 		})
 	],
 	build: {

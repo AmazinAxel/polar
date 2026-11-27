@@ -1,20 +1,12 @@
 <script lang="ts">
-    type moreInfoProps = {
-        imgInfo?: boolean;
-        style?: string;
-        children: () => any;
-    }
-    let { imgInfo, style, children }: moreInfoProps = $props();
-
-    let showInfo = $state(false);
-    import { fly } from 'svelte/transition';
-    import { quintOut } from 'svelte/easing';
-	const transition = { y: -10, duration: 200, easing: quintOut };
+	let { children }: { children: () => any } = $props();
+	let show = $state(false);
 </script>
+<style>
+	span { position: relative; cursor: help; color: var(--blue2); }
+	.card { position: absolute; z-index: 3; top: 1.5rem; left: 0; width: max-content; max-width: 18rem; margin: 0; padding: var(--m); }
+</style>
 
-<div class="moreInfoBtn" style={style}>
-    <img src="/media/icons/about.svg" alt="More info" class="noImgStyle" onmouseenter={() => showInfo = true} onmouseleave={() => showInfo = false}>
-    {#if showInfo}
-        <span class="moreInfo" class:imgInfo={imgInfo} in:fly|local={transition} out:fly|local={transition}>{@render children?.()}</span>
-    {/if}
-</div>
+<span role="note" onmouseenter={() => show = true} onmouseleave={() => show = false}>
+	ⓘ{#if show}<span class="card frost">{@render children?.()}</span>{/if}
+</span>

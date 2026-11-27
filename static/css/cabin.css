@@ -1,0 +1,394 @@
+/*
+ * cabin.css - the flurry shell's look, for the web.
+ * Values come from flurry's lib/style.rs and lib/backgroundSection.rs:
+ * keep them in sync when the shell changes.
+ * Served from amazinaxel.com/css/cabin.css to every site.
+ */
+
+/* Fonts: relative to this sheet, so they resolve to amazinaxel.com from any origin */
+@font-face {
+	font-family: Sora;
+	font-weight: 100 800;
+	font-display: swap;
+	src: url(../fonts/sora.woff2) format('woff2');
+}
+
+@font-face {
+	font-family: Iosevka;
+	font-display: swap;
+	src: url(../fonts/iosevka.ttf) format('truetype');
+}
+
+:root {
+	/* Polar Night */
+	--dark1: #2e3440;
+	--dark2: #3b4252;
+	--dark4: #4c566a;
+
+	/* Snow Storm */
+	--light1: #eceff4;
+	--light2: #e5e9f0;
+	--light3: #d8dee9;
+
+	/* Aurora */
+	--red: #bf616a;
+	--orange: #d08770;
+	--yellow: #ebcb8b;
+	--green: #a3be8c;
+	--purple: #b48ead;
+
+	/* Frost (blue1 is Permafrost blue) */
+	--blue1: #b5d2d9;
+	--blue2: #81a1c1;
+	--blue3: #5e81ac;
+	--blue4: #8fbcbb;
+
+	/* Every border's width, and the spacing scale (between items, inside controls, inside cards) */
+	--b: 3px;
+	--s: 4px;
+	--m: 8px;
+	--l: 16px;
+
+	--frost: #2e344099;
+	/* dark1 at 60%: frosted panels over images */
+	--tint: #2e344073;
+	/* dark1 at 45%: keeps light text readable on any image */
+	--glass: #ffffff0a;
+	/* white at 4%: button and input fill */
+
+	--ease: cubic-bezier(0, 0.6, 0.3, 1);
+	/* every transition's curve */
+
+	color-scheme: dark;
+	accent-color: var(--blue3);
+	scrollbar-color: var(--dark4) var(--dark1);
+}
+
+*,
+::before,
+::after {
+	box-sizing: border-box;
+}
+
+/* Sora 16px, light text, and the shell's bloom: every glyph glows in its own color */
+body {
+	margin: 0;
+	background: var(--dark1);
+	color: var(--light1);
+	font: 16px/1.5 Sora, sans-serif;
+	text-shadow: 0 0 8px color-mix(in srgb, currentColor 60%, transparent);
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Canvas behind body: only visible on overscroll below the footer */
+html {
+	background: var(--dark2);
+}
+
+/* Page column, shared by every site */
+#content {
+	max-width: 60rem;
+	margin: auto;
+	padding: var(--l);
+}
+
+/* Typography */
+h1,
+h2,
+h3 {
+	color: var(--light3);
+	font-weight: 700;
+	line-height: 1.2;
+	margin: var(--l) 0 var(--m);
+}
+
+h1 {
+	font-size: 2rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+/*
+ * Plain links: underlined on hover, always inside running text. The underline is a bar as wide
+ * as the sway/flurry border with the shell's bloom in blue, on the bar only (text-shadow would
+ * glow the text too), so it is a pseudo-element with a box-shadow, behind the text so descenders
+ * cross over it (isolate keeps it above whatever is behind the link). inline-block keeps a link
+ * one box, so the bar spans all of it even when it would wrap.
+ * Cards and buttons have borders of their own and skip this (not "any class": Svelte gives
+ * every element in a styled component one).
+ */
+a:not(.card, .button) {
+	position: relative;
+	isolation: isolate;
+	display: inline-block;
+}
+
+a:not(.card, .button):hover::after,
+:is(p, li) a:not(.card, .button)::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 2px;
+	z-index: -1;
+	height: var(--b);
+	background: var(--blue3);
+	box-shadow: 0 0 8px #81a1c199;
+	/* blue2 at 60%, like the text bloom */
+}
+
+img,
+video {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+/* Code */
+code,
+pre,
+kbd {
+	font-family: Iosevka, monospace;
+}
+
+kbd {
+	font-weight: 500;
+	background: var(--glass);
+	border: var(--b) solid var(--dark4);
+}
+
+:not(pre)>code {
+	background: var(--dark2);
+	padding: 0 var(--s);
+}
+
+pre {
+	background: var(--dark2);
+	border: var(--b) solid var(--dark4);
+	padding: var(--m);
+	overflow-x: auto;
+}
+
+/* Misc elements */
+blockquote {
+	margin: var(--l) 0;
+	padding-left: var(--l);
+	border-left: var(--b) solid var(--blue3);
+}
+
+ul {
+	list-style: square;
+}
+
+::marker {
+	color: var(--blue2);
+}
+
+hr {
+	border: 0;
+	border-top: var(--b) solid var(--dark4);
+	margin: var(--l) 0;
+}
+
+/* Graphite's selection colors */
+::selection {
+	background: #dbdee5;
+	color: #000000de;
+	text-shadow: none;
+}
+
+:focus-visible {
+	outline: var(--b) solid var(--blue2);
+	outline-offset: 0;
+}
+
+/* Controls: square, translucent fill, dark border */
+button,
+.button,
+input,
+select,
+textarea {
+	font: inherit;
+	color: inherit;
+	background: var(--glass);
+	border: var(--b) solid var(--dark4);
+	border-radius: 0;
+	padding: var(--m);
+}
+
+button,
+.button {
+	cursor: pointer;
+	font-weight: 500;
+	/* the browser's button style sets text-shadow: none; take the body's bloom back */
+	text-shadow: inherit;
+}
+
+button:hover,
+.button:hover,
+button:focus-visible,
+.button:focus-visible {
+	outline: var(--b) solid var(--blue2);
+	outline-offset: 0;
+}
+
+/* Active or selected item */
+.active,
+[aria-pressed=true] {
+	background: var(--blue3);
+	border-color: var(--blue3);
+}
+
+:disabled {
+	opacity: 0.5;
+	cursor: default;
+}
+
+/* Card: the shell's widget background */
+.card {
+	background: var(--dark1);
+	padding: var(--l);
+	margin: var(--l) 0;
+	border: var(--b) solid #ffffff1c;
+}
+
+/*
+ * Modal: a card centered like the shell's menus (top edge where a 700px-tall card would sit),
+ * page dimmed behind. Opened with showModal(), so focus, Esc and the inert page come native.
+ */
+dialog {
+	width: min(500px, calc(100vw - 2 * var(--l)));
+	/* viewport minus the top margin below and a bottom gap, so the card's bottom edge stays on screen */
+	max-height: calc(100vh - max(var(--l), calc(50vh - 350px)) - var(--l));
+	margin: max(var(--l), calc(50vh - 350px)) auto 0;
+	padding: 0;
+	background: var(--dark1);
+	color: inherit;
+	border: var(--b) solid var(--blue3);
+}
+
+dialog::backdrop {
+	background: var(--frost);
+}
+
+/* A modal URL's prerendered dialog, before JS makes it modal: same spot, page dimmed by a
+   spread shadow standing in for the backdrop */
+dialog[open]:not(:modal) {
+	position: fixed;
+	inset: 0;
+	height: fit-content;
+	z-index: 10;
+	box-shadow: 0 0 0 100vmax var(--frost);
+}
+
+/* Frosted panel for anything over an image: translucent only, the image under it is
+   already blurred (live backdrop blur re-renders on every scroll) */
+.frost {
+	background: var(--frost);
+	border: var(--b) solid #ffffff1c;
+	background-clip: padding-box;
+}
+
+/*
+ * Blurred image block (the shell's wallpaper header), image set with style="--img: url(...)".
+ * Two tinted copies: a wide soft halo that bleeds past the box (before),
+ * under a sharper one that keeps the detail (after). Inset faint white outline.
+ */
+.scene {
+	position: relative;
+	isolation: isolate;
+	padding: 48px var(--l);
+	outline: var(--b) solid #ffffff1c;
+	outline-offset: calc(-1 * var(--b));
+}
+
+.scene::before,
+.scene::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background: linear-gradient(var(--tint), var(--tint)), var(--img) center / cover;
+	filter: blur(8px);
+}
+
+.scene::after {
+	filter: blur(2px);
+}
+
+/* Status borders, for cards and buttons */
+.error {
+	border-color: var(--red);
+}
+
+.warn {
+	border-color: var(--orange);
+}
+
+.ok {
+	border-color: var(--green);
+}
+
+/*
+ * Journal entry styling, shared: the journal site links this file, and the site's journal
+ * preview modal renders the same compiled HTML with it.
+ */
+
+/* Heading anchors (the journal wraps every heading in .ribbonAnchor) */
+.ribbonAnchor {
+	text-decoration: none;
+}
+
+.ribbonAnchor :is(h1, h2, h3)::before {
+	content: '# ';
+	color: var(--blue3);
+}
+
+/* Images inside entries */
+.smallImg {
+	width: 50%;
+	margin: auto;
+}
+
+.imageCaption {
+	margin-top: 0;
+	text-align: center;
+	font-style: italic;
+	color: var(--light3);
+}
+
+.imgSideBySide {
+	display: flex;
+	align-items: center;
+	gap: var(--m);
+}
+
+.imgSideBySide p {
+	flex: 1;
+	margin: 0;
+}
+
+@media (max-width: 750px) {
+	.smallImg {
+		width: 100%;
+	}
+}
+
+.fade {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	justify-content: center;
+	background: linear-gradient(to bottom, #2e344000, #2e3440d9 55%, #2e3440);
+}
